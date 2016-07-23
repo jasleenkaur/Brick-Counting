@@ -36,14 +36,23 @@ opening = cv2.morphologyEx(thresh_hsv,cv2.MORPH_OPEN,kernel, iterations = 1)
 sure_bg = cv2.dilate(opening,kernel,iterations=1)
 _, contours, hierarchy= cv2.findContours(sure_bg, cv2.RETR_CCOMP, cv2.CHAIN_APPROX_SIMPLE)
 idx =0 
+count=0
 for cnt in contours:
     idx += 1
+    area = cv2.contourArea(cnt)
+    print str(idx) +"="+ str(area)
+    if area < 100:  # percentile should be here
+        continue
+    print " area = " + str(area) 
     x,y,w,h = cv2.boundingRect(cnt)
+    cv2.drawContours( img, cnt,-1, (0,255,0),2) 
+    count=count+1
     #cv2.rectangle(img,(x,y),(x+w,y+h),(0,255,0),2)
 #draw conours are better to draw a boundary
-cv2.drawContours( img, contours,-1, (0,255,0),2)    
-print "total number of bricks: " +  str(idx)
+#cv2.drawContours( img, contours,-1, (0,255,0),2)    
+print "total number of bricks: " +  str(idx) +"  count  =" +str(count)
 cv2.imshow("All keypoints",img)
+cv2.imwrite("keypoints.jpg",img)
 cv2.imshow('opening',opening)
 cv2.imshow('sure_bg',sure_bg)
 cv2.imwrite('images/sure_bg.png',sure_bg)
