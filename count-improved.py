@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 import argparse
 import time
+from matplotlib import pyplot as plt
 # Construct argument parse to inline image with command
 ap = argparse.ArgumentParser()
 ap.add_argument("-i", "--image", help = "path to the image")
@@ -9,17 +10,14 @@ args = vars(ap.parse_args())
 t1 = time.time() 
 # load the image
 img = cv2.imread(args["image"])
-
 #noise removal by blurring coloured image
 blur = cv2.GaussianBlur(img,(9,9),10.0)
 
 # convert BGR TO HSV
 hsv = cv2.cvtColor(img ,cv2.COLOR_BGR2HSV)
 gray_hsv = cv2.cvtColor(hsv,cv2.COLOR_BGR2GRAY)
-
 # Otsu Thresholding
 ret, thresh_hsv = cv2.threshold(gray_hsv,0,255,cv2.THRESH_BINARY+cv2.THRESH_OTSU)
-cv2.imwrite("thresh_hsv.jpg",thresh_hsv)
 
 # noise removal
 kernel = np.ones((3,3),np.uint8)
@@ -48,9 +46,16 @@ print "total number of bricks: " +  str(idx) +"  count  =" +str(count)
 #draw conours are better to draw a boundary
 #cv2.drawContours( img, contours,-1, (0,255,0),2)    
 #print "total number of bricks: " +  str(idx)
-#cv2.imshow("image with contours",img)
-cv2.imwrite("imageCONTOURS.jpg",img)
-#cv2.imshow('opening',opening)
+
 t2 = time.time() -t1
-print "time taken: " + str(t2)
+print "time taken(seconds): " + str(t2)
+plt.hist(gray_hsv.ravel(),256,[0,256]); plt.show()
+titles = ['Original Image', 'hsv image', 'Thresholding',
+            'opening' ]
+images = [img, hsv, thresh_hsv, opening_image]
+for i in xrange(4):
+    plt.subplot(2,2,i+1),plt.imshow(images[i],'gray')
+    plt.title(titles[i])
+    plt.xticks([]),plt.yticks([])
+plt.show()
 cv2.waitKey(0)
