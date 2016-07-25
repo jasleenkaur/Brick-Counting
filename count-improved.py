@@ -1,12 +1,12 @@
 import cv2
 import numpy as np
 import argparse
-
+import time
 # Construct argument parse to inline image with command
 ap = argparse.ArgumentParser()
 ap.add_argument("-i", "--image", help = "path to the image")
 args = vars(ap.parse_args())
- 
+t1 = time.time() 
 # load the image
 img = cv2.imread(args["image"])
 
@@ -51,4 +51,6 @@ print "total number of bricks: " +  str(idx) +"  count  =" +str(count)
 #cv2.imshow("image with contours",img)
 cv2.imwrite("imageCONTOURS.jpg",img)
 #cv2.imshow('opening',opening)
+t2 = time.time() -t1
+print "time taken: " + str(t2)
 cv2.waitKey(0)
