@@ -21,23 +21,19 @@ ret, thresh_hsv = cv2.threshold(gray_hsv,0,255,cv2.THRESH_BINARY+cv2.THRESH_OTSU
 
 # noise removal
 kernel = np.ones((3,3),np.uint8)
-opening = cv2.morphologyEx(thresh_hsv,cv2.MORPH_OPEN,kernel, iterations = 2)
-opening_image = opening
-#cv2.imshow("opening_image.jpg",opening_image)
-#closing = cv2.morphologyEx(thresh_hsv,cv2.MORPH_CLOSE,kernel, iterations = 1)
-#cv2.imwrite("closing.jpg",closing)
+opening = cv2.morphologyEx(thresh_hsv,cv2.MORPH_OPEN,kernel, iterations = 1)
 
 _, contours, hierarchy= cv2.findContours(opening, cv2.RETR_CCOMP, cv2.CHAIN_APPROX_SIMPLE)
 idx =0
 count = 0 
 for cnt in contours:
+    cv2.drawContours(opening,[cnt],0,255,-1)
     idx += 1
     area = cv2.contourArea(cnt)
     print str(idx) +"="+ str(area)
-    if area <70:  # percentile should be here
+    if area <20:  # percentile should be here
         continue
     x,y,w,h = cv2.boundingRect(cnt)
-    cv2.drawContours( img, cnt,-1, (0,255,0),2) 
     count=count+1
 print "total number of bricks: " +  str(idx) +"  count  =" +str(count)
     #idx += 1
@@ -52,10 +48,11 @@ print "time taken(seconds): " + str(t2)
 plt.hist(gray_hsv.ravel(),256,[0,256]); plt.show()
 titles = ['Original Image', 'hsv image', 'Thresholding',
             'opening' ]
-images = [img, hsv, thresh_hsv, opening_image]
+images = [img, hsv, thresh_hsv, opening]
 for i in xrange(4):
     plt.subplot(2,2,i+1),plt.imshow(images[i],'gray')
     plt.title(titles[i])
     plt.xticks([]),plt.yticks([])
 plt.show()
+
 cv2.waitKey(0)
