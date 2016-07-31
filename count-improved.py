@@ -4,9 +4,9 @@ import argparse
 import time
 from matplotlib import pyplot as plt
 # Construct argument parse to inline image with command
-ap = argparse.ArgumentParser()
-ap.add_argument("-i", "--image", help = "path to the image")
-args = vars(ap.parse_args())
+parser = argparse.ArgumentParser(description="-----Brick Counting algorithm to count number of bricks from an image.-----")
+parser.add_argument("-i", "--image", help = "path to the image")
+args = vars(parser.parse_args())
 
 # time module to observe time taken
 t1 = time.time() 
